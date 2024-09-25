@@ -3,7 +3,8 @@ import { Categorie } from '../model/categorie.model';
 import { Produit } from '../model/produit.model';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { apiURL } from '../config';
+import { apiURL, apiURLCat } from '../config';
+import { CategorieWrapper } from '../model/CategorieWrapped.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -52,11 +53,20 @@ export class ProduitService {
     return this.http.put<Produit>(apiURL, prod, httpOptions);
   }
 
-  listeCategories(): Observable<Categorie[]> {
-    return this.http.get<Categorie[]>(apiURL + '/cat');
+  listeCategories(): Observable<CategorieWrapper> {
+    return this.http.get<CategorieWrapper>(apiURLCat);
   }
 
-  /*   consulterCategorie(id:number): Categorie{
-            return this.categories.find(cat => cat.idCat == id)!;
-            } */
+  rechercherParCategorie(idCat: number): Observable<Produit[]> {
+    const url = `${apiURL}/prodscat/${idCat}`;
+    return this.http.get<Produit[]>(url);
+  }
+
+  rechercherParNom(nom: string): Observable<Produit[]> {
+    const url = `${apiURL}/prodsByName/${nom}`;
+    return this.http.get<Produit[]>(url);
+  }
+  ajouterCategorie(cat: Categorie): Observable<Categorie> {
+    return this.http.post<Categorie>(apiURLCat, cat, httpOptions);
+  }
 }
